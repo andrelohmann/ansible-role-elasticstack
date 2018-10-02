@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   author: andrelohmann
+  role_name: elasticstack
   description: ansible galaxy role to deploy elasticstack
   company: smartformer UG
 
