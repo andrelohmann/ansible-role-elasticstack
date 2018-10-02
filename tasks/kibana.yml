@@ -1,0 +1,50 @@
+---
+
+- name: set pin facts
+  set_fact:
+    _pin_package: kibana
+    _pin_version: "{{ elasticsearch_release }}"
+
+- name: set kibana preferences file
+  template:
+    src: pin.pref.j2
+    dest: "/etc/apt/preferences.d/kibana.pref"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install kibana packages
+  apt:
+    name: "{{item}}"
+    state: latest
+    dpkg_options: 'force-confnew,force-confdef'
+    autoremove: yes
+    update_cache: yes
+  with_items:
+  - kibana
+
+- name: bind to ip
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    regexp: 'server.host:'
+    line: "server.host: {{ elasticsearch_kibana_listen_ip }}"
+  when: elasticsearch_kibana_listen_ip is defined
+
+- name: set elasticsearch url
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    regexp: 'elasticsearch.url:'
+    line: "elasticsearch.url: \"http://{{ elasticsearch_listen_ip }}:9200\""
+  when: elasticsearch_listen_ip is defined
+
+- name: start kibana
+  systemd:
+    name: "kibana"
+    state: started
+    enabled: yes
+
+- name: pause for one minute to allow kibana to come up
+  pause:
+    minutes: 1
+
+...

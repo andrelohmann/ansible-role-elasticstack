@@ -1,0 +1,313 @@
+---
+
+- block:
+
+  - name: set pin facts
+    set_fact:
+      _pin_package: auditbeat
+      _pin_version: "{{ elasticsearch_release }}"
+
+  - name: set elasticsearch preferences file
+    template:
+      src: pin.pref.j2
+      dest: "/etc/apt/preferences.d/auditbeat.pref"
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: install auditbeat
+    apt:
+      name: "{{item}}"
+      state: latest
+      dpkg_options: 'force-confnew,force-confdef'
+      autoremove: yes
+      update_cache: yes
+    with_items:
+    - auditbeat
+    register: _auditbeat_installed
+
+  - name: uncomment original elasticsearch host
+    lineinfile:
+      path: /etc/auditbeat/auditbeat.yml
+      regexp: "^  hosts: [\"localhost:9200\"]"
+      line: "  #hosts: [\"localhost:9200\"]"
+    when: elasticsearch_listen_ip is defined
+
+  - name: set kibana ip
+    lineinfile:
+      path: /etc/auditbeat/auditbeat.yml
+      line: "  host: \"{{ elasticsearch_kibana_listen_ip }}:5601\""
+      insertafter: '^  #host: "localhost:5601"'
+    when: elasticsearch_kibana_listen_ip is defined
+
+  - name: set elasticsearch ip
+    lineinfile:
+      path: /etc/auditbeat/auditbeat.yml
+      regexp: '^  hosts:'
+      line: "  hosts: [\"{{ elasticsearch_listen_ip }}:9200\"]"
+      insertafter: '  #hosts: [\"localhost:9200\"]'
+    when: elasticsearch_listen_ip is defined
+
+  - name: restart auditbeat
+    service:
+      name: auditbeat
+      enabled: yes
+      state: restarted
+
+  - name: install auditbeat kibana dashboards
+    shell: auditbeat setup
+    args:
+      executable: /bin/bash
+    when: _auditbeat_installed.changed
+
+  when: elasticsearch_install_auditbeat
+
+- block:
+
+  - name: set pin facts
+    set_fact:
+      _pin_package: filebeat
+      _pin_version: "{{ elasticsearch_release }}"
+
+  - name: set elasticsearch preferences file
+    template:
+      src: pin.pref.j2
+      dest: "/etc/apt/preferences.d/filebeat.pref"
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: install filebeat
+    apt:
+      name: "{{item}}"
+      state: latest
+      dpkg_options: 'force-confnew,force-confdef'
+      autoremove: yes
+      update_cache: yes
+    with_items:
+    - filebeat
+    register: _filebeat_installed
+
+  - name: uncomment original elasticsearch host
+    lineinfile:
+      path: /etc/filebeat/filebeat.yml
+      regexp: "^  hosts: [\"localhost:9200\"]"
+      line: "  #hosts: [\"localhost:9200\"]"
+    when: elasticsearch_listen_ip is defined
+
+  - name: set kibana ip
+    lineinfile:
+      path: /etc/filebeat/filebeat.yml
+      line: "  host: \"{{ elasticsearch_kibana_listen_ip }}:5601\""
+      insertafter: '^  #host: "localhost:5601"'
+    when: elasticsearch_kibana_listen_ip is defined
+
+  - name: set elasticsearch ip
+    lineinfile:
+      path: /etc/filebeat/filebeat.yml
+      regexp: '^  hosts:'
+      line: "  hosts: [\"{{ elasticsearch_listen_ip }}:9200\"]"
+      insertafter: '  #hosts: [\"localhost:9200\"]'
+    when: elasticsearch_listen_ip is defined
+
+  - name: restart filebeat
+    service:
+      name: filebeat
+      enabled: yes
+      state: restarted
+
+  - name: install filebeat kibana dashboards
+    shell: filebeat setup
+    args:
+      executable: /bin/bash
+    when: _filebeat_installed.changed
+
+  when: elasticsearch_install_filebeat
+
+- block:
+
+  - name: set pin facts
+    set_fact:
+      _pin_package: heartbeat-elastic
+      _pin_version: "{{ elasticsearch_release }}"
+
+  - name: set elasticsearch preferences file
+    template:
+      src: pin.pref.j2
+      dest: "/etc/apt/preferences.d/heartbeat-elastic.pref"
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: install heartbeat
+    apt:
+      name: "{{item}}"
+      state: latest
+      dpkg_options: 'force-confnew,force-confdef'
+      autoremove: yes
+      update_cache: yes
+    with_items:
+    - heartbeat-elastic
+    register: _heartbeat_installed
+
+  - name: uncomment original elasticsearch host
+    lineinfile:
+      path: /etc/heartbeat/heartbeat.yml
+      regexp: "^  hosts: [\"localhost:9200\"]"
+      line: "  #hosts: [\"localhost:9200\"]"
+    when: elasticsearch_listen_ip is defined
+
+  - name: set kibana ip
+    lineinfile:
+      path: /etc/heartbeat/heartbeat.yml
+      line: "  host: \"{{ elasticsearch_kibana_listen_ip }}:5601\""
+      insertafter: '^  #host: "localhost:5601"'
+    when: elasticsearch_kibana_listen_ip is defined
+
+  - name: set elasticsearch ip
+    lineinfile:
+      path: /etc/heartbeat/heartbeat.yml
+      regexp: '^  hosts:'
+      line: "  hosts: [\"{{ elasticsearch_listen_ip }}:9200\"]"
+      insertafter: '  #hosts: [\"localhost:9200\"]'
+    when: elasticsearch_listen_ip is defined
+
+  - name: restart heartbeat
+    service:
+      name: heartbeat-elastic
+      enabled: yes
+      state: restarted
+
+  - name: install heartbeat kibana dashboards
+    shell: heartbeat setup
+    args:
+      executable: /bin/bash
+    when: _heartbeat_installed.changed
+
+  when: elasticsearch_install_heartbeat
+
+- block:
+
+  - name: set pin facts
+    set_fact:
+      _pin_package: metricbeat
+      _pin_version: "{{ elasticsearch_release }}"
+
+  - name: set elasticsearch preferences file
+    template:
+      src: pin.pref.j2
+      dest: "/etc/apt/preferences.d/metricbeat.pref"
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: install metricbeat
+    apt:
+      name: "{{item}}"
+      state: latest
+      dpkg_options: 'force-confnew,force-confdef'
+      autoremove: yes
+      update_cache: yes
+    with_items:
+    - metricbeat
+    register: _metricbeat_installed
+
+  - name: uncomment original elasticsearch host
+    lineinfile:
+      path: /etc/metricbeat/metricbeat.yml
+      regexp: "^  hosts: [\"localhost:9200\"]"
+      line: "  #hosts: [\"localhost:9200\"]"
+    when: elasticsearch_listen_ip is defined
+
+  - name: set kibana ip
+    lineinfile:
+      path: /etc/metricbeat/metricbeat.yml
+      line: "  host: \"{{ elasticsearch_kibana_listen_ip }}:5601\""
+      insertafter: '^  #host: "localhost:5601"'
+    when: elasticsearch_kibana_listen_ip is defined
+
+  - name: set elasticsearch ip
+    lineinfile:
+      path: /etc/metricbeat/metricbeat.yml
+      regexp: '^  hosts:'
+      line: "  hosts: [\"{{ elasticsearch_listen_ip }}:9200\"]"
+      insertafter: '  #hosts: [\"localhost:9200\"]'
+    when: elasticsearch_listen_ip is defined
+
+  - name: restart metricbeat
+    service:
+      name: metricbeat
+      enabled: yes
+      state: restarted
+
+  - name: install metricbeat kibana dashboards
+    shell: metricbeat setup
+    args:
+      executable: /bin/bash
+    when: _metricbeat_installed.changed
+
+  when: elasticsearch_install_metricbeat
+
+- block:
+
+  - name: set pin facts
+    set_fact:
+      _pin_package: packetbeat
+      _pin_version: "{{ elasticsearch_release }}"
+
+  - name: set elasticsearch preferences file
+    template:
+      src: pin.pref.j2
+      dest: "/etc/apt/preferences.d/packetbeat.pref"
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: install packetbeat
+    apt:
+      name: "{{item}}"
+      state: latest
+      dpkg_options: 'force-confnew,force-confdef'
+      autoremove: yes
+      update_cache: yes
+    with_items:
+    - packetbeat
+    register: _packetbeat_installed
+
+  - name: uncomment original elasticsearch host
+    lineinfile:
+      path: /etc/packetbeat/packetbeat.yml
+      regexp: "^  hosts: [\"localhost:9200\"]"
+      line: "  #hosts: [\"localhost:9200\"]"
+    when: elasticsearch_listen_ip is defined
+
+  - name: set kibana ip
+    lineinfile:
+      path: /etc/packetbeat/packetbeat.yml
+      line: "  host: \"{{ elasticsearch_kibana_listen_ip }}:5601\""
+      insertafter: '^  #host: "localhost:5601"'
+    when: elasticsearch_kibana_listen_ip is defined
+
+  - name: set elasticsearch ip
+    lineinfile:
+      path: /etc/packetbeat/packetbeat.yml
+      regexp: '^  hosts:'
+      line: "  hosts: [\"{{ elasticsearch_listen_ip }}:9200\"]"
+      insertafter: '  #hosts: [\"localhost:9200\"]'
+    when: elasticsearch_listen_ip is defined
+
+  - name: restart packetbeat
+    service:
+      name: packetbeat
+      enabled: yes
+      state: restarted
+
+  - name: install packetbeat kibana dashboards
+    shell: packetbeat setup
+    args:
+      executable: /bin/bash
+    when: _packetbeat_installed.changed
+
+  when: elasticsearch_install_packetbeat
+
+...

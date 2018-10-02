@@ -1,0 +1,17 @@
+---
+
+elasticsearch_heap_size: 1g
+elasticsearch_install_elasticsearch: True
+elasticsearch_install_kibana: True
+# elasticsearch_network_host: "localhost"
+# elasticsearch_listen_ip: "localhost"
+# elasticsearch_kibana_listen_ip: "localhost"
+elasticsearch_release: 6.4.1
+
+elasticsearch_install_auditbeat: True
+elasticsearch_install_filebeat: True
+elasticsearch_install_heartbeat: True
+elasticsearch_install_metricbeat: True
+elasticsearch_install_packetbeat: True
+
+...

@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: andrelohmann
+  description: ansible galaxy role to deploy elasticstack
+  company: smartformer UG
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Ubuntu
+      versions:
+      - xenial
+      - bionic
+
+  galaxy_tags:
+  - elasticstack
+  - elasticsearch
+  - kibana
+
+dependencies: []
+...

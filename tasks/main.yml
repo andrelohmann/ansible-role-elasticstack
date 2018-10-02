@@ -1,0 +1,64 @@
+---
+
+- name: install packages
+  apt:
+    name: "{{item}}"
+    state: latest
+    dpkg_options: 'force-confnew,force-confdef'
+    autoremove: yes
+    update_cache: yes
+  with_items:
+  - apt-transport-https
+  - software-properties-common
+  - python-pexpect
+
+#- name: install required python modules
+#  pip:
+#    name: "{{ item }}"
+#    extra_args: --upgrade
+#  with_items:
+#  - pexpect
+
+- name: install java 8
+  apt_repository:
+    repo: ppa:webupd8team/java
+
+- name: Accept Java 8 License
+  become: yes
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+
+- name: install java8 packages
+  apt:
+    name: "{{item}}"
+    state: latest
+    dpkg_options: 'force-confnew,force-confdef'
+    autoremove: yes
+    update_cache: yes
+  with_items:
+  - oracle-java8-installer
+  - ca-certificates
+  - oracle-java8-set-default
+
+- name: Add an Apt signing key, uses whichever key is at the URL
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add elastic repository
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/6.x/apt stable main
+    state: present
+    filename: elastic-6.x
+
+- name: install elasticsearch
+  include: elasticsearch.yml
+  when: elasticsearch_install_elasticsearch
+
+- name: install kibana
+  include: kibana.yml
+  when: elasticsearch_install_kibana
+
+- name: install beats
+  include: beats.yml
+
+...
