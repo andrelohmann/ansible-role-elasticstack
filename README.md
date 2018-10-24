@@ -33,6 +33,17 @@ Example Playbook
       roles:
          - { role: andrelohmann.elasticsearch }
 
+Todo
+----
+
+Implement the following instructions into the role
+
+https://blog.netways.de/2017/09/14/secure-elasticsearch-and-kibana-with-an-nginx-http-proxy/
+
+or
+
+implement SearchGuard
+
 License
 -------
 
