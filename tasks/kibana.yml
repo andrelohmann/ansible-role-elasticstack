@@ -15,13 +15,16 @@
 
 - name: install kibana packages
   apt:
-    name: "{{item}}"
+    name: "{{ packages }}"
     state: latest
     dpkg_options: 'force-confnew,force-confdef'
+    autoclean: yes
     autoremove: yes
     update_cache: yes
-  with_items:
-  - kibana
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - kibana
 
 - name: bind to ip
   lineinfile:

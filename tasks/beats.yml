@@ -17,13 +17,16 @@
 
   - name: install auditbeat
     apt:
-      name: "{{item}}"
+      name: "{{ packages }}"
       state: latest
       dpkg_options: 'force-confnew,force-confdef'
+      autoclean: yes
       autoremove: yes
       update_cache: yes
-    with_items:
-    - auditbeat
+      cache_valid_time: 3600
+    vars:
+      packages:
+      - auditbeat
     register: _auditbeat_installed
 
   - name: uncomment original elasticsearch host
@@ -49,7 +52,7 @@
     when: elasticsearch_listen_ip is defined
 
   - name: restart auditbeat
-    service:
+    systemd:
       name: auditbeat
       enabled: yes
       state: restarted
@@ -79,13 +82,16 @@
 
   - name: install filebeat
     apt:
-      name: "{{item}}"
+      name: "{{ packages }}"
       state: latest
       dpkg_options: 'force-confnew,force-confdef'
+      autoclean: yes
       autoremove: yes
       update_cache: yes
-    with_items:
-    - filebeat
+      cache_valid_time: 3600
+    vars:
+      packages:
+      - filebeat
     register: _filebeat_installed
 
   - name: uncomment original elasticsearch host
@@ -111,7 +117,7 @@
     when: elasticsearch_listen_ip is defined
 
   - name: restart filebeat
-    service:
+    systemd:
       name: filebeat
       enabled: yes
       state: restarted
@@ -141,13 +147,16 @@
 
   - name: install heartbeat
     apt:
-      name: "{{item}}"
+      name: "{{ packages }}"
       state: latest
       dpkg_options: 'force-confnew,force-confdef'
+      autoclean: yes
       autoremove: yes
       update_cache: yes
-    with_items:
-    - heartbeat-elastic
+      cache_valid_time: 3600
+    vars:
+      packages:
+      - heartbeat-elastic
     register: _heartbeat_installed
 
   - name: uncomment original elasticsearch host
@@ -173,7 +182,7 @@
     when: elasticsearch_listen_ip is defined
 
   - name: restart heartbeat
-    service:
+    systemd:
       name: heartbeat-elastic
       enabled: yes
       state: restarted
@@ -203,13 +212,16 @@
 
   - name: install metricbeat
     apt:
-      name: "{{item}}"
+      name: "{{ packages }}"
       state: latest
       dpkg_options: 'force-confnew,force-confdef'
+      autoclean: yes
       autoremove: yes
       update_cache: yes
-    with_items:
-    - metricbeat
+      cache_valid_time: 3600
+    vars:
+      packages:
+      - metricbeat
     register: _metricbeat_installed
 
   - name: uncomment original elasticsearch host
@@ -235,7 +247,7 @@
     when: elasticsearch_listen_ip is defined
 
   - name: restart metricbeat
-    service:
+    systemd:
       name: metricbeat
       enabled: yes
       state: restarted
@@ -265,13 +277,16 @@
 
   - name: install packetbeat
     apt:
-      name: "{{item}}"
+      name: "{{ packages }}"
       state: latest
       dpkg_options: 'force-confnew,force-confdef'
+      autoclean: yes
       autoremove: yes
       update_cache: yes
-    with_items:
-    - packetbeat
+      cache_valid_time: 3600
+    vars:
+      packages:
+      - packetbeat
     register: _packetbeat_installed
 
   - name: uncomment original elasticsearch host
@@ -297,7 +312,7 @@
     when: elasticsearch_listen_ip is defined
 
   - name: restart packetbeat
-    service:
+    systemd:
       name: packetbeat
       enabled: yes
       state: restarted

@@ -2,15 +2,18 @@
 
 - name: install packages
   apt:
-    name: "{{item}}"
+    name: "{{ packages }}"
     state: latest
     dpkg_options: 'force-confnew,force-confdef'
+    autoclean: yes
     autoremove: yes
     update_cache: yes
-  with_items:
-  - apt-transport-https
-  - software-properties-common
-  - python-pexpect
+    cache_valid_time: 3600
+  vars:
+    packages:
+    - apt-transport-https
+    - software-properties-common
+    - python-pexpect
 
 #- name: install required python modules
 #  pip:
