@@ -15,32 +15,28 @@
     - software-properties-common
     - python-pexpect
 
-#- name: install required python modules
-#  pip:
-#    name: "{{ item }}"
-#    extra_args: --upgrade
-#  with_items:
-#  - pexpect
+- name: Add an Apt signing key, uses whichever key is at the URL
+  apt_key:
+    id: "0xB1998361219BD9C9"
+    keyserver: hkp://keyserver.ubuntu.com:80
+    state: present
 
-- name: install java 8
+- name: install zulu repository for OpenJDK 12
   apt_repository:
-    repo: ppa:webupd8team/java
+    repo: deb http://repos.azulsystems.com/ubuntu stable main
+    state: present
+    filename: zulu-openjdk
 
-- name: Accept Java 8 License
-  become: yes
-  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
-
-- name: install java8 packages
+- name: install OpenJDK 12
   apt:
-    name: "{{item}}"
+    name: "{{ packages }}"
     state: latest
     dpkg_options: 'force-confnew,force-confdef'
     autoremove: yes
     update_cache: yes
-  with_items:
-  - oracle-java8-installer
-  - ca-certificates
-  - oracle-java8-set-default
+  vars:
+    packages:
+    - zulu-12
 
 - name: Add an Apt signing key, uses whichever key is at the URL
   apt_key:
