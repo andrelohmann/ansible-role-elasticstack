@@ -31,7 +31,7 @@ script:
   # pause for two minutes
   - sleep 120
   # fetch kibana
-  - curl -i http://elastic.lokal:5601/api/spaces/space
+  - curl -i http://localhost:5601/api/spaces/space
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
