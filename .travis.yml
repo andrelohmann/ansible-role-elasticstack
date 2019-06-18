@@ -26,6 +26,8 @@ script:
   - ansible-galaxy install andrelohmann.zulu_openjdk
   # Basic role syntax check
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  # pause for two minutes
+  - sleep 120
   # fetch elasticstack
   - curl -i http://localhost:9200
   # pause for two minutes
