@@ -12,31 +12,6 @@
   vars:
     packages:
     - apt-transport-https
-    - software-properties-common
-    - python-pexpect
-
-- name: Add an Apt signing key, uses whichever key is at the URL
-  apt_key:
-    id: "0xB1998361219BD9C9"
-    keyserver: hkp://keyserver.ubuntu.com:80
-    state: present
-
-- name: install zulu repository for OpenJDK 12
-  apt_repository:
-    repo: deb http://repos.azulsystems.com/ubuntu stable main
-    state: present
-    filename: zulu-openjdk
-
-- name: install OpenJDK 12
-  apt:
-    name: "{{ packages }}"
-    state: latest
-    dpkg_options: 'force-confnew,force-confdef'
-    autoremove: yes
-    update_cache: yes
-  vars:
-    packages:
-    - zulu-12
 
 - name: Add an Apt signing key, uses whichever key is at the URL
   apt_key:
@@ -45,17 +20,17 @@
 
 - name: Add elastic repository
   apt_repository:
-    repo: deb https://artifacts.elastic.co/packages/6.x/apt stable main
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
     state: present
-    filename: elastic-6.x
+    filename: elastic-7.x
 
 - name: install elasticsearch
   include: elasticsearch.yml
-  when: elasticsearch_install_elasticsearch
+  when: elasticsearch_install_elasticsearch|bool
 
 - name: install kibana
   include: kibana.yml
-  when: elasticsearch_install_kibana
+  when: elasticsearch_install_kibana|bool
 
 - name: install beats
   include: beats.yml

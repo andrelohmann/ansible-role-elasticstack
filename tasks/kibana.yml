@@ -29,16 +29,49 @@
 - name: bind to ip
   lineinfile:
     path: /etc/kibana/kibana.yml
-    regexp: 'server.host:'
+    regexp: '^server.host:'
     line: "server.host: {{ elasticsearch_kibana_listen_ip }}"
+    insertafter: "^#server.host:"
   when: elasticsearch_kibana_listen_ip is defined
 
-- name: set elasticsearch url
+- name: bind to port
   lineinfile:
     path: /etc/kibana/kibana.yml
-    regexp: 'elasticsearch.url:'
-    line: "elasticsearch.url: \"http://{{ elasticsearch_listen_ip }}:9200\""
-  when: elasticsearch_listen_ip is defined
+    regexp: '^server.port:'
+    line: "server.port: {{ elasticsearch_kibana_listen_port }}"
+    insertafter: "^#server.port:"
+  when: elasticsearch_kibana_listen_port is defined
+
+- name: set elasticsearch hosts
+  lineinfile:
+    path: /etc/kibana/kibana.yml
+    regexp: '^elasticsearch.hosts:'
+    line: "elasticsearch.hosts: {{ elasticsearch_kibana_elasticsearch_hosts }}"
+    insertafter: "^#elasticsearch.hosts:"
+  when: elasticsearch_kibana_elasticsearch_hosts is defined
+
+# - name: deactivate xpack
+#   blockinfile:
+#     path: /etc/kibana/kibana.yml
+#     marker: "# {mark} deactivate xpack"
+#     content: |
+#       xpack.license_management.enabled: false
+#       xpack.rollup.enabled: false
+#       xpack.apm.enabled: false
+#       xpack.grokdebugger.enabled: false
+#       xpack.searchprofiler.enabled: false
+#       xpack.graph.enabled: false
+#       xpack.infra.enabled: false
+#       xpack.ml.enabled: false
+#       xpack.monitoring.enabled: false
+#       xpack.reporting.enabled: false
+#       xpack.security.enabled: false
+#       xpack.security.audit.enabled: false
+#       xpack.spaces.enabled: false
+
+- name: just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
 
 - name: start kibana
   systemd:

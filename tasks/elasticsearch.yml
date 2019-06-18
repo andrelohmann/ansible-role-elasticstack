@@ -53,26 +53,42 @@
     path: /etc/elasticsearch/elasticsearch.yml
     regexp: 'network.host'
     line: "network.host: {{ elasticsearch_network_host }}"
+    insertafter: "^#network.host:"
   when: elasticsearch_network_host is defined
 
-- name: deactivate xpack
-  blockinfile:
+- name: set discovery.seed_hosts
+  lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
-    marker: "# {mark} deactivate xpack"
-    content: |
-      xpack.security.enabled: false
-      xpack.monitoring.enabled: false
-      xpack.watcher.enabled: false
-      xpack.ml.enabled: false
+    regexp: '^discovery.type:'
+    line: "discovery.type: single-node"
+    insertbefore: "^#discovery.seed_hosts"
+  when: elasticsearch_single_node|bool
 
-#- name: update elasticsearch.yml
-#  template:
-#    src: elasticsearch.yml.j2
-#    dest: "/etc/elasticsearch/elasticsearch.yml"
-#    owner: root
-#    group: root
-#    mode: 0644
-#  register: _elasticsearch_config
+
+- name: set discovery.seed_hosts
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^discovery.seed_hosts:'
+    line: "discovery.seed_hosts: {{ elasticsearch_config_discovery_seed_hosts }}"
+    insertafter: "^#discovery.seed_hosts"
+  when: elasticsearch_config_discovery_seed_hosts is defined
+
+# - name: deactivate xpack
+#   blockinfile:
+#     path: /etc/elasticsearch/elasticsearch.yml
+#     marker: "# {mark} deactivate xpack"
+#     content: |
+#       xpack.security.audit.enabled: false
+#       xpack.security.enabled: false
+#       xpack.monitoring.enabled: false
+#       xpack.watcher.enabled: false
+#       xpack.ml.enabled: false
+#       xpack.sql.enabled: false
+#       xpack.license.self_generated.type: basic
+
+- name: just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
 
 - name: start elasticsearch
   systemd:

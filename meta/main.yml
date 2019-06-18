@@ -20,5 +20,6 @@ galaxy_info:
   - elasticsearch
   - kibana
 
-dependencies: []
+dependencies:
+- andrelohmann.zulu_openjdk
 ...

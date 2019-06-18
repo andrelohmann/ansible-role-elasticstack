@@ -63,7 +63,7 @@
       executable: /bin/bash
     when: _auditbeat_installed.changed
 
-  when: elasticsearch_install_auditbeat
+  when: elasticsearch_install_auditbeat|bool
 
 - block:
 
@@ -128,7 +128,7 @@
       executable: /bin/bash
     when: _filebeat_installed.changed
 
-  when: elasticsearch_install_filebeat
+  when: elasticsearch_install_filebeat|bool
 
 - block:
 
@@ -193,7 +193,7 @@
       executable: /bin/bash
     when: _heartbeat_installed.changed
 
-  when: elasticsearch_install_heartbeat
+  when: elasticsearch_install_heartbeat|bool
 
 - block:
 
@@ -258,7 +258,7 @@
       executable: /bin/bash
     when: _metricbeat_installed.changed
 
-  when: elasticsearch_install_metricbeat
+  when: elasticsearch_install_metricbeat|bool
 
 - block:
 
@@ -323,6 +323,6 @@
       executable: /bin/bash
     when: _packetbeat_installed.changed
 
-  when: elasticsearch_install_packetbeat
+  when: elasticsearch_install_packetbeat|bool
 
 ...

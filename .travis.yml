@@ -1,19 +1,19 @@
 ---
 language: python
-python: "2.7"
+python: "3.6"
 
 sudo: required
-dist: trusty
+dist: xenial
 
 # Install ansible
 addons:
   apt:
     packages:
-    - python-pip
+    - python3-pip
 
 install:
   # Install ansible
-  - pip install ansible
+  - pip3 install ansible
 
   # Check ansible version
   - ansible --version
@@ -22,8 +22,18 @@ install:
   - printf '[defaults]\nroles_path=../' >ansible.cfg
 
 script:
+  # install galaxy role
+  - ansible-galaxy install andrelohmann.zulu_openjdk
   # Basic role syntax check
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  # fetch elasticstack
+  - curl -i http://localhost:9200
+  # pause for two minutes
+  - sleep 120
+  # fetch kibana
+  - curl -i http://elastic.lokal:5601/api/spaces/space
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+
+...

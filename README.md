@@ -18,7 +18,7 @@ Role Variables
     # elasticsearch_network_host: "localhost" # elasticsearch listens here
     # elasticsearch_listen_ip: "localhost" # ip address to which kibana and beats should connect to
     # elasticsearch_kibana_listen_ip: "localhost" # kibana listens here
-    elasticsearch_release: 6.4.2
+    elasticsearch_release: 7.1.1
 
     elasticsearch_install_auditbeat: True
     elasticsearch_install_filebeat: True
