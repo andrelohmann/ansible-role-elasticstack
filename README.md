@@ -18,13 +18,15 @@ Role Variables
     # elasticsearch_network_host: "localhost" # elasticsearch listens here
     # elasticsearch_listen_ip: "localhost" # ip address to which kibana and beats should connect to
     # elasticsearch_kibana_listen_ip: "localhost" # kibana listens here
-    elasticsearch_release: 7.1.1
+    elasticsearch_release: 7.4.0
 
     elasticsearch_install_auditbeat: True
     elasticsearch_install_filebeat: True
     elasticsearch_install_heartbeat: True
     elasticsearch_install_metricbeat: True
     elasticsearch_install_packetbeat: True
+
+    elasticsearch_init_trial_license: False # Should a 30 Day Trial license be initialized and XPack feature be installed
 
 Example Playbook
 ----------------

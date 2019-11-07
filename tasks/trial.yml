@@ -1,0 +1,20 @@
+---
+
+- name: activate trial license
+  uri:
+    url: "http://{{ elasticsearch_kibana_listen_ip }}:9200/_license?pretty"
+    method: GET
+  register: _license
+
+- name: debug trial result
+  debug:
+    msg: "{{ _license.json.license.type }}"
+
+- name: activate trial license
+  uri:
+    url: "http://{{ elasticsearch_kibana_listen_ip }}:9200/_license/start_trial?acknowledge=true&pretty"
+    method: POST
+  register: _trial
+  when: _license.json.license.type != "trial"
+
+...

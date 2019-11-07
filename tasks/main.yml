@@ -35,4 +35,8 @@
 - name: install beats
   include: beats.yml
 
+- name: install trial license
+  include: trial.yml
+  when: elasticsearch_init_trial_license|bool
+
 ...
